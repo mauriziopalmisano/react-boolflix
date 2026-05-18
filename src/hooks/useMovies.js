@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { MovieContext } from '../contexts/MovieContext';
 
-function useTheme() {
+function useMovies() {
     const context = useContext(MovieContext);
 
     if (context === null) {
@@ -14,4 +14,4 @@ function useTheme() {
     return context;
 }
 
-export default useTheme;
+export default useMovies;
