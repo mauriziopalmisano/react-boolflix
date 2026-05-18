@@ -2,17 +2,60 @@ import { useState, useEffect, createContext, useRef } from "react";
 import { API_KEY } from "../data";
 
 const MovieContext = createContext(null);
-const partialURL = 'https://api.themoviedb.org/3/search/movie?query=';
-const popularURL = 'https://api.themoviedb.org/3/movie/popular';
+const partialURL = 'https://api.themoviedb.org/3/search/multi?query='
+const popularMoviesURL = 'https://api.themoviedb.org/3/movie/popular';
+//const popularTvURL = 'https://api.themoviedb.org/3/tv/popular';
 
 function MovieProvider({ children }) {
-    const [search, setSearch] = useState(null);
-    const [movieTitle, setMovieTitle] = useState('');
+    const [search, setSearch] = useState(popularMoviesURL);
+    const [searchedTitle, setSearchedTitle] = useState('');
     const [fetchedData, setFetechedData] = useState(null);
     const [loadingStatus, setLoadingStatus] = useState(true);
     const [error, setError] = useState(null);
-    
     const mountedStatus = useRef(true);
+
+    const lenguageExeption = {
+        en: 'gb',
+        ja: 'jp',
+        zh: 'cn',
+        ko: 'kr',
+        da: 'dk',
+        el: 'gr'
+    }
+
+    const exeptionLenguageToCountry = (language) => {
+        return lenguageExeption[language] || language;
+    };
+
+
+
+
+    function standardList(multiList) {
+        const filtredList = multiList.filter(element => element.media_type !== 'person');
+        const mappedList = filtredList.map(element => {
+            const keyTitle = element.media_type === 'movie' ? 'title' : 'name';
+            const keyOriginalTitle = element.media_type === 'movie' ? 'original_title' : 'original_name';
+            const valutation = Math.ceil(Math.ceil((element.vote_average || 0) / 2));
+            const imgURL = element.poster_path ? `https://image.tmdb.org/t/p/w185${element.poster_path}` : 'https://placehold.co/500x750?text=No+Poster';
+            const country = exeptionLenguageToCountry(element.original_language);
+            const flagURL = `https://flagcdn.com/16x12/${country}.png`;
+            return {
+                id: element.id,
+                title: element[keyTitle],
+                original_title: element[keyOriginalTitle],
+                vote_average: valutation ? valutation : 0,
+                img: imgURL,
+                flagURL: flagURL
+            }
+        });
+        console.log(mappedList);
+
+        return mappedList;
+    }
+
+
+
+
 
     useEffect(() => {
         mountedStatus.current = true;
@@ -20,6 +63,11 @@ function MovieProvider({ children }) {
         setFetechedData(null);
         setLoadingStatus(true);
         setError(null);
+
+
+
+
+
 
         const options = {
             method: 'GET',
@@ -31,7 +79,7 @@ function MovieProvider({ children }) {
         };
 
 
-        fetch(search ? search : popularURL, options)
+        fetch(search, options)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`Errore HTTP: ${response.status}`);
@@ -40,7 +88,10 @@ function MovieProvider({ children }) {
             })
             .then((json) => {
                 if (mountedStatus.current) {
-                    setFetechedData(json);
+                    const newList = standardList(json.results);
+                    console.log(newList);
+
+                    setFetechedData(newList);
                     setLoadingStatus(false);
                 }
             })
@@ -61,28 +112,26 @@ function MovieProvider({ children }) {
 
     const changeHandler = (event) => {
         const { value } = event.target;
-        setMovieTitle(value);
+        setSearchedTitle(value);
         console.log(value);
 
     }
 
     const submitHandler = (event) => {
         event.preventDefault();
-        if(movieTitle){
-            setSearch(partialURL + movieTitle);
-        }else{
-            setSearch(popularURL);
-        }
-        console.log(movieTitle);
+        setSearch(partialURL + searchedTitle);
+        console.log(searchedTitle);
 
     }
 
     const value = {
         search,
-        movieTitle,
+        searchedTitle,
         changeHandler,
         submitHandler,
-        fetchedData
+        fetchedData,
+        loadingStatus,
+        error
     };
 
     return (
