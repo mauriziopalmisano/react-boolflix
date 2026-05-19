@@ -70,8 +70,8 @@ export function standardList(multiList) {
     const mappedList = multiList.map(element => {
         const keyTitle = element.media_type === 'movie' ? 'title' : 'name';
         const keyOriginalTitle = element.media_type === 'movie' ? 'original_title' : 'original_name';
-        const valutation = Math.ceil(Math.ceil((element.vote_average || 0) / 2));
-        const imgURL = element.poster_path ? `https://image.tmdb.org/t/p/w185${element.poster_path}` : 'https://placehold.co/500x750?text=No+Poster';
+        const valutation = Math.ceil((element.vote_average || 0) / 2);
+        const imgURL = element.poster_path ? `https://image.tmdb.org/t/p/w342${element.poster_path}` : 'https://placehold.co/500x750?text=No+Poster';
         const country = exeptionLenguageToCountry(element.original_language);
         const flagURL = `https://flagcdn.com/16x12/${country}.png`;
         return {
@@ -80,7 +80,8 @@ export function standardList(multiList) {
             original_title: element[keyOriginalTitle] ? element[keyOriginalTitle] : element.original_title,
             vote_average: valutation ? valutation : 0,
             img: imgURL,
-            flagURL: flagURL
+            flagURL: flagURL,
+            overview : element.overview
         }
     });
 

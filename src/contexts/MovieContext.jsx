@@ -73,7 +73,6 @@ function MovieProvider({ children }) {
     const changeHandler = (event) => {
         const { value } = event.target;
         setSearchedTitle(value);
-        console.log(value);
     };
 
     const submitHandler = (event) => {

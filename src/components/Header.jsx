@@ -2,7 +2,7 @@ import useMovies from "../hooks/useMovies.js";
 
 function Header() {
 
-    const {searchedTitle, changeHandler, submitHandler} = useMovies()
+    const { searchedTitle, changeHandler, submitHandler, clearSearchHandler, isSearching } = useMovies()
 
     return (
         <header>
@@ -10,8 +10,11 @@ function Header() {
                 <div className="container-fluid">
                     <a className="navbar-brand text-danger">Boolflix</a>
                     <form className="d-flex" onSubmit={submitHandler}>
-                        <input className="form-control me-2" type="text" value={searchedTitle} onChange={changeHandler} name="query"/>
+                        <input className="form-control me-2" type="text" value={searchedTitle} onChange={changeHandler} name="query" />
                         <button className="btn btn-outline-danger" type="submit">Search</button>
+                        {isSearching && (
+                            <button className="btn btn-danger mx-2" onClick={clearSearchHandler}>Annulla</button>
+                        )}
                     </form>
                 </div>
             </nav>
