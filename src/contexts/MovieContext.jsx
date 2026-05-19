@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useRef } from "react";
-import { API_KEY } from "../data";
+import { API_KEY } from "../data/data.js";
 import { searchMulti, popularMoviesListFetch, popularTvListFetch, standardList } from "../utils/functions";
 
 const MovieContext = createContext(null);
