@@ -2,16 +2,16 @@ import useMovies from "../hooks/useMovies.js";
 
 function Header() {
 
-    const {movieTitle, changeHandler, submitHandler} = useMovies()
+    const {searchedTitle, changeHandler, submitHandler} = useMovies()
 
     return (
         <header>
-            <nav className="navbar bg-body-tertiary">
+            <nav className="navbar bg-dark">
                 <div className="container-fluid">
-                    <a className="navbar-brand">Boolflix</a>
+                    <a className="navbar-brand text-danger">Boolflix</a>
                     <form className="d-flex" onSubmit={submitHandler}>
-                        <input className="form-control me-2" type="text" value={movieTitle} onChange={changeHandler} name="query"/>
-                        <button className="btn btn-outline-primary" type="submit">Search</button>
+                        <input className="form-control me-2" type="text" value={searchedTitle} onChange={changeHandler} name="query"/>
+                        <button className="btn btn-outline-danger" type="submit">Search</button>
                     </form>
                 </div>
             </nav>
